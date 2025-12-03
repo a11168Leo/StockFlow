@@ -1,0 +1,24 @@
+gerenciador_estoque/
+│
+├── main.py                 # Arquivo principal que inicia a interface
+├── estoque/                # Módulo de gerenciamento de estoque
+│   ├── __init__.py
+│   ├── estoque.py          # CRUD do estoque (adicionar, remover, atualizar)
+│   ├── mapa.py             # Funções do mapa visual do estoque
+│   └── orcamento.py        # Funções de cálculo de orçamento e relatórios
+│
+├── arquivos/               # Para importar/exportar arquivos
+│   ├── leitor.py           # Funções de leitura de CSV/Excel/PDF/TXT
+│   └── exportador.py       # Funções de exportação de CSV/Excel
+│
+├── interface/              # Interface gráfica (Tkinter ou PyQt)
+│   ├── __init__.py
+│   ├── gui.py              # Janela principal
+│   └── componentes.py      # Widgets reutilizáveis
+│
+├── banco/                  # Banco de dados (opcional)
+│   └── db.py               # Conexão e tabelas SQLite
+│
+├── recursos/               # Imagens, ícones, logos
+│
+└── README.md               # Documentação do projeto
