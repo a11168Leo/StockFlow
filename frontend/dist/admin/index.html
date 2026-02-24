@@ -4,16 +4,66 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StockFlow | Admin</title>
-    <script type="module" crossorigin src="/assets/admin-BWGL6o77.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/auth-DdmjKQKl.js">
-    <link rel="stylesheet" crossorigin href="/assets/role-UHgPNPyx.css">
+    <script type="module" crossorigin src="/assets/admin-CkcMyl8r.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/auth-CVND7qm_.js">
+    <link rel="stylesheet" crossorigin href="/assets/admin-DBVQHuiF.css">
   </head>
   <body>
-    <main class="role-page">
-      <section class="role-card">
-        <h1>Area <span id="role-name"></span></h1>
-        <p>Usuario autenticado: <code id="user-id"></code></p>
-        <button id="logout-btn" type="button">Sair</button>
+    <main class="admin-page">
+      <aside class="admin-aside">
+        <header class="aside-header">
+          <h1>StockFlow Admin</h1>
+          <p>Usuario: <code id="user-id"></code></p>
+        </header>
+
+        <section class="panel">
+          <h2>Ferramenta</h2>
+          <div class="tool-row">
+            <button id="mode-draw" class="tool active" type="button">Desenhar</button>
+            <button id="mode-select" class="tool" type="button">Selecionar</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Nova secao</h2>
+          <label for="section-name">Nome da secao</label>
+          <input id="section-name" type="text" placeholder="Ex.: Bebidas" />
+
+          <label for="section-shelf">Prateleira</label>
+          <input id="section-shelf" type="text" placeholder="Ex.: P-03" />
+
+          <label for="section-type">Tipo</label>
+          <select id="section-type">
+            <option value="corredor">Corredor</option>
+            <option value="prateleira">Prateleira</option>
+            <option value="ilha">Ilha</option>
+            <option value="caixa">Caixa</option>
+          </select>
+
+          <label for="section-color">Cor</label>
+          <input id="section-color" type="color" value="#5b7cff" />
+          <p class="hint">Clique e arraste no mapa para desenhar.</p>
+        </section>
+
+        <section class="panel">
+          <h2>Secoes</h2>
+          <ul id="sections-list" class="sections-list"></ul>
+        </section>
+
+        <section class="panel actions">
+          <button id="sync-api" type="button">Sincronizar secoes na API</button>
+          <button id="clear-layout" type="button" class="danger">Limpar planta</button>
+          <button id="logout-btn" type="button">Sair</button>
+          <p id="status-message" class="status-message" aria-live="polite"></p>
+        </section>
+      </aside>
+
+      <section class="map-area">
+        <div class="map-header">
+          <h2>Planta 2D do estoque</h2>
+          <p>Defina secoes e prateleiras para localizar produtos por area.</p>
+        </div>
+        <canvas id="warehouse-canvas" width="1400" height="900"></canvas>
       </section>
     </main>
 
