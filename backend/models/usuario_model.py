@@ -1,17 +1,18 @@
 import random
 from datetime import datetime
-from passlib.hash import bcrypt  # Para hash seguro de senhas
+
+from passlib.hash import bcrypt
+
+PERFIS_VALIDOS = {"admin", "lider", "funcionario"}
+
 
 class Usuario:
     def __init__(self, nome, email, senha, perfil, caixa_id=None, ativo=True):
-        """
-        Usuario do sistema com email e senha segura.
-        perfil: 'admin', 'gerente', 'funcionario'
-        caixa_id: número aleatório de 5 dígitos para funcionário
-        """
         self.nome = nome
         self.email = email
-        self.senha_hash = self.hash_senha(senha)  # senha criptografada
+        if perfil not in PERFIS_VALIDOS:
+            raise ValueError("Perfil invalido. Use: admin, lider ou funcionario.")
+        self.senha_hash = self.hash_senha(senha)
         self.perfil = perfil
         self.caixa_id = caixa_id if caixa_id else self.gerar_caixa_id()
         self.ativo = ativo

@@ -1,8 +1,19 @@
 from datetime import datetime
 
 class Movimentacao:
-    def __init__(self, produto_id, tipo, quantidade, preco_unitario, usuario_id,
-                 numero_lote=None, data_validade=None):
+    def __init__(
+        self,
+        produto_id,
+        tipo,
+        quantidade,
+        preco_unitario,
+        usuario_id,
+        numero_lote=None,
+        data_validade=None,
+        origem="manual",
+        lote_esperado_peps=None,
+        violacao_peps=False,
+    ):
         """
         Movimentação de estoque (entrada, saída, ajuste).
         """
@@ -13,6 +24,9 @@ class Movimentacao:
         self.usuario_id = usuario_id
         self.numero_lote = numero_lote
         self.data_validade = data_validade
+        self.origem = origem
+        self.lote_esperado_peps = lote_esperado_peps
+        self.violacao_peps = bool(violacao_peps)
         self.data = datetime.now()
 
     def to_dict(self):
