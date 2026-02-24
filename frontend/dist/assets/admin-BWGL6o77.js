@@ -1,0 +1,1 @@
+import{e as t,l as n}from"./auth-DdmjKQKl.js";/* empty css             */const e=t(["admin"]);if(!e)throw new Error("Sessao invalida");document.getElementById("role-name").textContent="Admin";document.getElementById("user-id").textContent=e.userId;document.getElementById("logout-btn").addEventListener("click",n);

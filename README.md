@@ -1,98 +1,156 @@
 # StockFlow
 
-Status atual do projeto para orientar integracoes e continuidade do desenvolvimento.
+Backend FastAPI para controle de estoque com MongoDB.
 
-## Visao Geral
+## Entregas desta iteracao
 
-StockFlow hoje esta implementado como backend em FastAPI com MongoDB para controle de estoque, alertas e tarefas operacionais.
-
-## O que ja foi feito
-
-- Estrutura principal do backend organizada em:
-  - `backend/api`
-  - `backend/models`
-  - `backend/services`
-  - `backend/utils`
-  - `backend/database`
-- Conexao com MongoDB via `MONGO_URI` e selecao de banco.
-- Bootstrap de indices e configuracao padrao (`margem_alerta_estoque`).
-- Modelos de dominio:
-  - Usuario
-  - Produto
-  - Movimentacao
-  - Alerta
-  - Tarefa
-  - Fornecedor
-  - Secao
-- Servicos implementados para:
-  - usuarios
-  - produtos
-  - movimentacoes
-  - alertas
-  - tarefas
-  - configuracoes
-  - estoque por lote (PEPS/FIFO)
+- Autenticacao JWT com access token e refresh token rotativo.
+- Revogacao de refresh token em `logout` e no processo de `refresh`.
+- Dependencias de autorizacao por perfil migradas para Bearer token.
+- Observabilidade com logs estruturados em JSON e metricas Prometheus em `/metrics`.
+- Health checks em `/health/live` e `/health/ready`.
+- Hardening inicial com CORS restritivo por ambiente e rate limit global.
+- Endpoints publicos para servicos auxiliares:
   - fornecedores
   - secoes
-- Endpoints principais ja disponiveis:
-  - `POST /usuarios/`
-  - `POST /login/`
-  - `GET /produtos/`
-  - `POST /produtos/`
-  - `POST /produtos/scan/`
-  - `POST /produtos/csv/`
-  - `GET /alertas/`
-  - `POST /alertas/gerar/`
-  - `GET /configuracoes/margem-alerta`
-  - `PUT /configuracoes/margem-alerta`
-  - `POST /tarefas/`
-  - `GET /tarefas/minhas`
-  - `POST /tarefas/{tarefa_id}/concluir`
-- Regras de negocio ja aplicadas:
-  - perfis de acesso (`admin`, `lider`, `funcionario`)
-  - controle de permissoes por rota
-  - validacoes de duplicidade de produto
-  - movimentacao por scan (entrada e saida)
-  - controle de lote e validacao PEPS
-  - criacao automatica de alertas e tarefas em cenarios operacionais
-  - importacao de produtos por CSV
-  - serializacao de `ObjectId` e `datetime` para JSON
+  - movimentacoes
+- Suite de testes (unitarios + integracao com `mongomock`).
+- Pipeline CI em GitHub Actions com lint e testes em push/PR.
+- Baseline de deploy com `Dockerfile` e `docker-compose.yml`.
 
-## O que esta em progresso
+## Endpoints principais
 
-- Existem alteracoes locais nao commitadas no backend (arquivos modificados e novos arquivos).
-- Existem arquivos de cache Python (`__pycache__`, `.pyc`) no workspace que precisam de limpeza.
+### Autenticacao
 
-## O que ainda nao foi feito
+- `POST /auth/login`
+- `POST /auth/refresh`
+- `POST /auth/logout`
+- `POST /login/` (legado, marcado como deprecated)
 
-- Autenticacao robusta (JWT com expiracao/refresh). Hoje usa `X-User-Id`.
-- Suite de testes automatizados (unitarios e integracao).
-- CI/CD com lint e testes em push.
-- Observabilidade completa (logs estruturados, metricas e alertas tecnicos).
-- Endpoints publicos para todos os servicos auxiliares (ex.: fornecedores/secoes/movimentacoes).
-- Documentacao detalhada de payloads/request-response de cada endpoint.
-- Estrategia formal de deploy (Docker, health checks, ambiente staging/producao).
-- Hardening de seguranca para producao (gestao de segredos, CORS restritivo, rate limit).
+#### `POST /auth/login`
+Request:
+```json
+{
+  "email": "admin@stockflow.com",
+  "senha": "Senha123!"
+}
+```
+Response:
+```json
+{
+  "access_token": "...",
+  "refresh_token": "...",
+  "token_type": "bearer",
+  "expires_in_seconds": 1800
+}
+```
 
-## Proximas Integracoes Recomendadas
+#### `POST /auth/refresh`
+Request:
+```json
+{
+  "refresh_token": "..."
+}
+```
+Response:
+```json
+{
+  "access_token": "...",
+  "refresh_token": "...",
+  "token_type": "bearer",
+  "expires_in_seconds": 1800
+}
+```
 
-1. Implementar JWT e remover dependencia de `X-User-Id`.
-2. Criar testes para fluxos criticos (`/login`, `/produtos/scan`, `/alertas`).
-3. Expor endpoints faltantes para fornecedores, secoes e movimentacoes.
-4. Padronizar erros e adicionar endpoints de health check.
-5. Limpar arquivos de cache e ajustar `.gitignore`.
+#### `POST /auth/logout`
+Request:
+```json
+{
+  "refresh_token": "..."
+}
+```
+Response:
+```json
+{
+  "status": "ok"
+}
+```
 
-## Como executar (baseline)
+### Infra
 
-1. Criar e ativar ambiente virtual Python.
+- `GET /health/live`
+- `GET /health/ready`
+- `GET /metrics`
+
+### Auxiliares (novos)
+
+- `GET /fornecedores/`
+- `POST /fornecedores/`
+- `GET /secoes/`
+- `POST /secoes/`
+- `GET /movimentacoes/`
+- `POST /movimentacoes/`
+
+## Como executar localmente
+
+1. Criar e ativar ambiente virtual.
 2. Instalar dependencias:
-   - `pip install -r backend/requirements.txt`
-3. Configurar `.env` na raiz com:
-   - `MONGO_URI=...`
-   - `MONGO_DB_NAME=estoque_db` (opcional)
+   - `pip install -r backend/requirements-dev.txt`
+3. Criar `.env` a partir de `.env.example`.
 4. Iniciar API:
    - `uvicorn backend.api.main:app --reload`
+5. Acessar documentacao OpenAPI:
+   - `http://localhost:8000/docs`
 
-## Observacao
+## Seed inicial de usuarios
 
-Este README representa o estado observado no workspace em 23/02/2026 e deve ser atualizado a cada ciclo de entrega.
+Executar:
+
+- `python -m backend.scripts.seed_users`
+
+Usuarios criados/atualizados:
+
+- admin: `a11168@csmiguel.pt` / `admin1234`
+- funcionario: `a11077@csmiguel.pt` / `123456`
+
+## Testes e qualidade
+
+- Rodar lint:
+  - `ruff check backend/api backend/core backend/services/auth_service.py tests`
+- Rodar testes:
+  - `pytest -q`
+
+## CI/CD
+
+Arquivo: `.github/workflows/ci.yml`
+
+- Executa em `push` e `pull_request`.
+- Etapas:
+  1. install dependencies
+  2. lint com `ruff`
+  3. testes com `pytest`
+
+## Deploy (staging/producao)
+
+### Docker
+
+- Build:
+  - `docker build -t stockflow-api .`
+- Run:
+  - `docker compose up -d`
+
+### Estrategia sugerida
+
+1. `staging`: branch `develop`, base de dados isolada, smoke tests pos deploy.
+2. `producao`: branch `main`, deploy com aprovacao manual, monitoramento de `/health/ready` e `/metrics`.
+
+## Variaveis de ambiente
+
+Ver `.env.example`.
+
+Campos criticos para producao:
+
+- `JWT_SECRET` forte e rotacionavel.
+- `CORS_ALLOW_ORIGINS` restrito ao dominio frontend oficial.
+- `RATE_LIMIT_DEFAULT` ajustado por perfil de carga.
+- `MONGO_URI` apontando para cluster com autenticacao e TLS.

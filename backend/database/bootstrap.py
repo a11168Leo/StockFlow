@@ -11,6 +11,7 @@ def ensure_indexes():
     movimentacoes = mongodb.get_collection("movimentacoes")
     fornecedores = mongodb.get_collection("fornecedores")
     estoque_lotes = mongodb.get_collection("estoque_lotes")
+    refresh_tokens = mongodb.get_collection("refresh_tokens")
 
     usuarios.create_index([("email", ASCENDING)], unique=True, name="uniq_email")
     usuarios.create_index([("caixa_id", ASCENDING)], unique=True, name="uniq_caixa_id")
@@ -63,6 +64,10 @@ def ensure_indexes():
         [("produto_id", ASCENDING), ("data_validade", ASCENDING), ("data_entrada", ASCENDING)],
         name="idx_peps_ordem",
     )
+
+    refresh_tokens.create_index([("jti", ASCENDING)], unique=True, name="uniq_refresh_jti")
+    refresh_tokens.create_index([("usuario_id", ASCENDING)], name="idx_refresh_usuario")
+    refresh_tokens.create_index([("expira_em", ASCENDING)], name="idx_refresh_expira")
 
 
 def ensure_default_settings():
