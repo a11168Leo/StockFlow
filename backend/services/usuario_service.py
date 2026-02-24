@@ -4,7 +4,6 @@ from pymongo.errors import DuplicateKeyError
 from backend.database.connection import mongodb
 from backend.models.usuario_model import PERFIS_VALIDOS, Usuario
 
-
 usuarios_collection = mongodb.get_collection("usuarios")
 
 
@@ -58,10 +57,22 @@ class UsuarioService:
         return list(usuarios_collection.find({"perfil": {"$in": list(perfis)}, "ativo": True}))
 
     @staticmethod
+    def buscar_usuario_por_email(email: str):
+        return usuarios_collection.find_one({"email": email})
+
+    @staticmethod
     def buscar_usuario_por_id(usuario_id):
         if isinstance(usuario_id, str):
             usuario_id = ObjectId(usuario_id)
         return usuarios_collection.find_one({"_id": usuario_id})
+
+    @staticmethod
+    def atualizar_senha_por_id(usuario_id, nova_senha: str):
+        if isinstance(usuario_id, str):
+            usuario_id = ObjectId(usuario_id)
+        senha_hash = Usuario.hash_senha(nova_senha)
+        result = usuarios_collection.update_one({"_id": usuario_id}, {"$set": {"senha_hash": senha_hash}})
+        return result.modified_count > 0
 
 
 def verificar_senha_static(senha, hash_armazenado):

@@ -9,7 +9,16 @@
     <div id="starfield" aria-hidden="true"></div>
     <main class="page">
       <section class="login-card" aria-label="Login do StockFlow">
-        <h1>StockFlow</h1>
+        <div class="animated-logo" aria-label="Logo animada StockFlow">
+          <span class="logo-crate" aria-hidden="true">
+            <span class="logo-trail trail-1"></span>
+            <span class="logo-trail trail-2"></span>
+            <span class="logo-trail trail-3"></span>
+            <span class="crate-lid"></span>
+            <span class="crate-front"></span>
+          </span>
+          <span class="logo-text">StockFlow</span>
+        </div>
         <p class="subtitle">Entre com seu usuario</p>
 
         <form id="login-form" class="login-form">
@@ -17,7 +26,20 @@
           <input id="email" name="email" type="email" placeholder="admin@stockflow.com" required />
 
           <label for="senha">Senha</label>
-          <input id="senha" name="senha" type="password" placeholder="********" required />
+          <div class="password-field">
+            <input id="senha" name="senha" type="password" placeholder="********" required />
+            <button id="toggle-password" class="toggle-password" type="button" aria-label="Mostrar senha">
+              👁
+            </button>
+          </div>
+
+          <div class="login-options">
+            <label class="remember-label" for="remember-me">
+              <input id="remember-me" name="remember_me" type="checkbox" checked />
+              Lembrar de mim
+            </label>
+            <button id="forgot-password-btn" type="button" class="link-btn">Esqueci minha senha</button>
+          </div>
 
           <button id="submit-btn" type="submit">Entrar</button>
         </form>
@@ -25,6 +47,20 @@
         <p id="message" class="message" aria-live="polite"></p>
       </section>
     </main>
+
+    <dialog id="forgot-password-dialog" class="forgot-dialog">
+      <form id="forgot-password-form" class="forgot-form" method="dialog">
+        <h2>Recuperar senha</h2>
+        <p>Digite seu email para receber o link de redefinicao.</p>
+        <label for="forgot-email">Email</label>
+        <input id="forgot-email" type="email" required />
+        <div class="dialog-actions">
+          <button id="forgot-submit-btn" type="submit">Enviar email</button>
+          <button id="forgot-close-btn" type="button" class="secondary-btn">Cancelar</button>
+        </div>
+        <p id="forgot-message" class="message" aria-live="polite"></p>
+      </form>
+    </dialog>
 
     <script type="module" src="/src/login/main.js"></script>
   </body>

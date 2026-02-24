@@ -20,12 +20,44 @@ body {
   background: var(--bg);
 }
 
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: rgba(12, 10, 78, 0.94);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.topbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 62px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.menu-toggle {
+  margin: 0;
+  width: auto;
+  padding: 8px 14px;
+}
+
 .role-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 90px 24px 24px;
 }
 
 .role-card {
@@ -58,4 +90,71 @@ button {
 
 button:hover {
   background: var(--primary-hover);
+}
+
+.offcanvas-panel {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: min(320px, 86vw);
+  height: 100vh;
+  z-index: 30;
+  background: #d9d9d9;
+  box-shadow: -16px 0 32px rgba(0, 0, 0, 0.3);
+  transition: right 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.offcanvas-panel.open {
+  right: 0;
+}
+
+.offcanvas-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.offcanvas-head h2 {
+  margin: 0;
+}
+
+.menu-close {
+  margin: 0;
+  width: auto;
+  min-width: 36px;
+  padding: 8px 10px;
+}
+
+.offcanvas-nav {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.offcanvas-nav a {
+  color: #1c1c1c;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.offcanvas-nav a.active {
+  background: rgba(15, 44, 255, 0.12);
+  color: #0f2cff;
+}
+
+.offcanvas-user {
+  margin-top: auto;
+}
+
+.offcanvas-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  background: rgba(0, 0, 0, 0.4);
 }

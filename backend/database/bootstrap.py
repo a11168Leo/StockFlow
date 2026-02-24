@@ -12,6 +12,7 @@ def ensure_indexes():
     fornecedores = mongodb.get_collection("fornecedores")
     estoque_lotes = mongodb.get_collection("estoque_lotes")
     refresh_tokens = mongodb.get_collection("refresh_tokens")
+    password_reset_tokens = mongodb.get_collection("password_reset_tokens")
 
     usuarios.create_index([("email", ASCENDING)], unique=True, name="uniq_email")
     usuarios.create_index([("caixa_id", ASCENDING)], unique=True, name="uniq_caixa_id")
@@ -68,6 +69,14 @@ def ensure_indexes():
     refresh_tokens.create_index([("jti", ASCENDING)], unique=True, name="uniq_refresh_jti")
     refresh_tokens.create_index([("usuario_id", ASCENDING)], name="idx_refresh_usuario")
     refresh_tokens.create_index([("expira_em", ASCENDING)], name="idx_refresh_expira")
+
+    password_reset_tokens.create_index([("token", ASCENDING)], unique=True, name="uniq_reset_token")
+    password_reset_tokens.create_index([("usuario_id", ASCENDING)], name="idx_reset_usuario")
+    password_reset_tokens.create_index(
+        [("expira_em", ASCENDING)],
+        name="ttl_reset_expira",
+        expireAfterSeconds=0,
+    )
 
 
 def ensure_default_settings():

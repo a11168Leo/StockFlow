@@ -6,11 +6,36 @@
     <title>StockFlow | Funcionario</title>
   </head>
   <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#">StockFlow</a>
+        <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Abrir menu">
+          Menu
+        </button>
+      </div>
+    </header>
+
+    <aside id="offcanvas" class="offcanvas-panel" aria-hidden="true">
+      <div class="offcanvas-head">
+        <h2>Painel</h2>
+        <button id="menu-close" class="menu-close" type="button" aria-label="Fechar menu">X</button>
+      </div>
+      <nav class="offcanvas-nav">
+        <a href="#" class="active">Home</a>
+        <a href="#">Tarefas</a>
+        <a href="#">Movimentacoes</a>
+      </nav>
+      <div class="offcanvas-user">
+        <p>Utilizador: <strong id="user-name">-</strong></p>
+        <button id="logout-btn" type="button">Sair</button>
+      </div>
+    </aside>
+    <div id="offcanvas-overlay" class="offcanvas-overlay" hidden></div>
+
     <main class="role-page">
       <section class="role-card">
         <h1>Area <span id="role-name"></span></h1>
         <p>Usuario autenticado: <code id="user-id"></code></p>
-        <button id="logout-btn" type="button">Sair</button>
       </section>
     </main>
 

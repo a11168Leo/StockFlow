@@ -22,6 +22,14 @@ class Settings:
     cors_allow_origins: list[str]
     app_env: str
     rate_limit_default: str
+    frontend_reset_url: str
+    password_reset_minutes: int
+    smtp_host: str
+    smtp_port: int
+    smtp_user: str
+    smtp_password: str
+    smtp_from: str
+    smtp_use_tls: bool
 
     def __init__(self) -> None:
         self.jwt_secret = os.getenv("JWT_SECRET", "change-me-in-production")
@@ -35,6 +43,14 @@ class Settings:
         ]
         self.app_env = os.getenv("APP_ENV", "development")
         self.rate_limit_default = os.getenv("RATE_LIMIT_DEFAULT", "120/minute")
+        self.frontend_reset_url = os.getenv("FRONTEND_RESET_URL", "http://localhost:3000/login/")
+        self.password_reset_minutes = int(os.getenv("PASSWORD_RESET_MINUTES", "30"))
+        self.smtp_host = os.getenv("SMTP_HOST", "")
+        self.smtp_port = int(os.getenv("SMTP_PORT", "587"))
+        self.smtp_user = os.getenv("SMTP_USER", "")
+        self.smtp_password = os.getenv("SMTP_PASSWORD", "")
+        self.smtp_from = os.getenv("SMTP_FROM", "no-reply@stockflow.local")
+        self.smtp_use_tls = os.getenv("SMTP_USE_TLS", "true").lower() in {"1", "true", "yes"}
 
 
 @lru_cache

@@ -1,1 +1,0 @@
-import{e as t,l as n}from"./auth-CVND7qm_.js";/* empty css             */const e=t(["funcionario"]);if(!e)throw new Error("Sessao invalida");document.getElementById("role-name").textContent="Funcionario";document.getElementById("user-id").textContent=e.userId;document.getElementById("logout-btn").addEventListener("click",n);

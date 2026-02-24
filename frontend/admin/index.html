@@ -6,6 +6,13 @@
     <title>StockFlow | Admin</title>
   </head>
   <body>
+    <header class="admin-topbar">
+      <div class="admin-topbar-inner">
+        <a class="admin-brand" href="#">StockFlow Admin</a>
+        <p class="admin-user">Bem-vindo, <strong id="navbar-user-name">-</strong></p>
+      </div>
+    </header>
+
     <main class="admin-page">
       <aside class="admin-aside">
         <header class="aside-header">
@@ -19,6 +26,7 @@
             <button id="mode-draw" class="tool active" type="button">Desenhar</button>
             <button id="mode-select" class="tool" type="button">Selecionar</button>
           </div>
+          <p class="hint">No modo selecionar, arraste para mover e use o canto inferior direito para redimensionar.</p>
         </section>
 
         <section class="panel">
@@ -45,6 +53,19 @@
         <section class="panel">
           <h2>Secoes</h2>
           <ul id="sections-list" class="sections-list"></ul>
+          <button id="delete-section" type="button" class="danger">Remover secao selecionada</button>
+        </section>
+
+        <section class="panel">
+          <h2>Produto na secao</h2>
+          <label for="product-name">Produto</label>
+          <input id="product-name" type="text" placeholder="Ex.: Arroz 5kg" />
+
+          <label for="product-code">SKU/Codigo</label>
+          <input id="product-code" type="text" placeholder="Ex.: ARZ-005" />
+
+          <button id="add-product" type="button">Vincular ao setor selecionado</button>
+          <ul id="assigned-products" class="products-list"></ul>
         </section>
 
         <section class="panel actions">

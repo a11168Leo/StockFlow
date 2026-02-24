@@ -144,6 +144,25 @@ Arquivo: `.github/workflows/ci.yml`
 1. `staging`: branch `develop`, base de dados isolada, smoke tests pos deploy.
 2. `producao`: branch `main`, deploy com aprovacao manual, monitoramento de `/health/ready` e `/metrics`.
 
+### Acesso externo gratuito (Cloudflare Tunnel)
+
+1. Criar conta Cloudflare e abrir `Zero Trust`.
+2. Criar um Tunnel e copiar o token.
+3. Colocar no `.env`:
+   - `CLOUDFLARE_TUNNEL_TOKEN=seu_token`
+4. No Cloudflare Tunnel, criar rotas publicas para:
+   - `stockflow.seudominio.com` -> `http://frontend:3000`
+   - `api-stockflow.seudominio.com` -> `http://api:8000`
+5. Atualizar `.env`:
+   - `VITE_API_BASE_URL=https://api-stockflow.seudominio.com`
+   - `CORS_ALLOW_ORIGINS=http://localhost:3000,http://172.16.31.139:3000,https://stockflow.seudominio.com`
+   - `FRONTEND_RESET_URL=https://stockflow.seudominio.com/login/`
+6. Subir tudo com tunnel:
+   - `docker compose --profile tunnel up -d --build`
+
+Observacao:
+- Sempre que mudar `VITE_API_BASE_URL`, recrie o frontend com `--build`.
+
 ## Variaveis de ambiente
 
 Ver `.env.example`.

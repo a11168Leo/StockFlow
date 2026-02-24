@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StockFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
+
+    #ui {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      pointer-events: none;
+    }
+
+    #brand-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 18vh;
+      opacity: 0;
+      animation: brandReveal 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards 0.8s;
+    }
+
+    @keyframes brandReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #brand-name {
+      font-size: clamp(16px, 2.2vw, 30px);
+      font-weight: 200;
+      letter-spacing: 0.55em;
+      color: #090747;
+      text-transform: uppercase;
+      text-indent: 0.55em;
+      line-height: 1;
+    }
+
+    #brand-rule {
+      margin-top: 14px;
+      width: 48px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, #090747 50%, transparent 100%);
+      opacity: 0.45;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="canvas-container"></div>
+
+  <div id="ui">
+    <div id="brand-container">
+      <div id="brand-name">Stock Flow</div>
+      <div id="brand-rule"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      /* ── Constants ─────────────────────────────────────────────────────── */
+      const COLOR        = 0x090747;
+      const BOX_SIZE     = 1.7;
+      const FALL_SPEED   = 0.0055;
+      const TRAIL_COUNT  = 22;
+      const SAMPLE_EVERY = 2;   // frames between trail snapshots
+      const CAM_Z        = 7.5;
+      const CAM_FOV      = 36;
+
+      /* ── Renderer ──────────────────────────────────────────────────────── */
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+      /* ── Scene ─────────────────────────────────────────────────────────── */
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffffff);
+
+      /* ── Camera ────────────────────────────────────────────────────────── */
+      const camera = new THREE.PerspectiveCamera(
+        CAM_FOV,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        2000
+      );
+      camera.position.set(0, 0, CAM_Z);
+
+      /* ── Box Geometry (shared) ─────────────────────────────────────────── */
+      const boxGeo   = new THREE.BoxGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE);
+      const edgesGeo = new THREE.EdgesGeometry(boxGeo);
+
+      /* ── Main Box ──────────────────────────────────────────────────────── */
+      const mainMat = new THREE.LineBasicMaterial({ color: COLOR });
+      const mainBox = new THREE.LineSegments(edgesGeo, mainMat);
+      scene.add(mainBox);
+
+      /* ── Trail Boxes ───────────────────────────────────────────────────── */
+      const trails = [];
+      for (let i = 0; i < TRAIL_COUNT; i++) {
+        const t       = i / TRAIL_COUNT;
+        const opacity = Math.pow(1 - t, 2.4) * 0.38;
+        const mat     = new THREE.LineBasicMaterial({
+          color:      COLOR,
+          transparent: true,
+          opacity:    opacity,
+          depthWrite: false
+        });
+        const mesh = new THREE.LineSegments(edgesGeo, mat);
+        mesh.visible = false;
+        scene.add(mesh);
+        trails.push({ mesh, mat, baseT: t });
+      }
+
+      /* ── State ─────────────────────────────────────────────────────────── */
+      let worldY    = 0;
+      let frame     = 0;
+      const history = [];   // { y, rx, ry, rz, scale }
+
+      /* ── Helpers ───────────────────────────────────────────────────────── */
+      function easeInOutSine(t) {
+        return -(Math.cos(Math.PI * t) - 1) / 2;
+      }
+
+      /* ── Animation Loop ────────────────────────────────────────────────── */
+      function animate() {
+        requestAnimationFrame(animate);
+        frame++;
+
+        /* Fall */
+        worldY -= FALL_SPEED;
+
+        /* Rotation — slow Y spin + gentle X / Z wobble */
+        const rx = Math.sin(frame * 0.006) * 0.28 + frame * 0.0035;
+        const ry = frame * 0.008;
+        const rz = Math.sin(frame * 0.0045) * 0.07;
+
+        /* Subtle breathing scale */
+        const breathe = 1 + Math.sin(frame * 0.018) * 0.018;
+
+        /* Apply to main box */
+        mainBox.position.set(0, worldY, 0);
+        mainBox.rotation.set(rx, ry, rz);
+        mainBox.scale.setScalar(breathe);
+
+        /* Sample history */
+        if (frame % SAMPLE_EVERY === 0) {
+          history.unshift({ y: worldY, rx, ry, rz, scale: breathe });
+          const maxLen = TRAIL_COUNT * SAMPLE_EVERY + 8;
+          if (history.length > maxLen) history.length = maxLen;
+        }
+
+        /* Update trails */
+        trails.forEach(({ mesh, mat, baseT }, i) => {
+          const hIdx = (i + 1) * SAMPLE_EVERY;
+          const snap = history[hIdx];
+          if (snap) {
+            mesh.visible = true;
+            mesh.position.set(0, snap.y, 0);
+            mesh.rotation.set(snap.rx, snap.ry, snap.rz);
+            mesh.scale.setScalar(snap.scale);
+            /* Recalculate opacity for smooth dissipation */
+            mat.opacity = Math.pow(1 - baseT, 2.6) * 0.34;
+          } else {
+            mesh.visible = false;
+          }
+        });
+
+        /* Camera tracks box — creates infinite-fall illusion */
+        camera.position.y = worldY;
+        camera.lookAt(0, worldY, 0);
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      /* ── Resize ────────────────────────────────────────────────────────── */
+      window.addEventListener('resize', () => {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+
+    })();
+  </script>
+</body>
+</html>

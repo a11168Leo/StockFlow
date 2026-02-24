@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Flow - Logo Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .animation-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            perspective: 1000px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box-wrapper {
+            position: relative;
+            transform-style: preserve-3d;
+            animation: fall 4s linear infinite;
+        }
+
+        .box {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 8s linear infinite;
+        }
+
+        .box-face {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid #090747;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .box-face.front { transform: translateZ(60px); }
+        .box-face.back { transform: rotateY(180deg) translateZ(60px); }
+        .box-face.right { transform: rotateY(90deg) translateZ(60px); }
+        .box-face.left { transform: rotateY(-90deg) translateZ(60px); }
+        .box-face.top { transform: rotateX(90deg) translateZ(60px); }
+        .box-face.bottom { transform: rotateX(-90deg) translateZ(60px); }
+
+        .trail {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 1px solid #090747;
+            opacity: 0;
+            transform-style: preserve-3d;
+            pointer-events: none;
+        }
+
+        .trail-face {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 1px solid #090747;
+            background: transparent;
+        }
+
+        .trail-face.front { transform: translateZ(60px); }
+        .trail-face.back { transform: rotateY(180deg) translateZ(60px); }
+        .trail-face.right { transform: rotateY(90deg) translateZ(60px); }
+        .trail-face.left { transform: rotateY(-90deg) translateZ(60px); }
+        .trail-face.top { transform: rotateX(90deg) translateZ(60px); }
+        .trail-face.bottom { transform: rotateX(-90deg) translateZ(60px); }
+
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-400px) rotateX(0deg) rotateY(0deg);
+            }
+            100% {
+                transform: translateY(400px) rotateX(360deg) rotateY(360deg);
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+            100% {
+                transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+            }
+        }
+
+        
+        @keyframes fadeTrail {
+            0% {
+                opacity: 0.6;
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+        }
+
+        .trail {
+            animation: fadeTrail 1.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="animation-container">
+        <div class="box-wrapper" id="boxWrapper">
+            <div class="box">
+                <div class="box-face front"></div>
+                <div class="box-face back"></div>
+                <div class="box-face right"></div>
+                <div class="box-face left"></div>
+                <div class="box-face top"></div>
+                <div class="box-face bottom"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class TrailSystem {
+            constructor() {
+                this.boxWrapper = document.getElementById('boxWrapper');
+                this.container = document.querySelector('.animation-container');
+                this.trails = [];
+                this.lastTrailTime = 0;
+                this.trailInterval = 100; // milliseconds between trails
+                this.init();
+            }
+
+            init() {
+                this.createTrails();
+                this.animate();
+            }
+
+            createTrail() {
+                const trail = document.createElement('div');
+                trail.className = 'trail';
+                
+                // Create all 6 faces for the trail box
+                const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+                faces.forEach(face => {
+                    const faceDiv = document.createElement('div');
+                    faceDiv.className = `trail-face ${face}`;
+                    trail.appendChild(faceDiv);
+                });
+
+                // Copy current transform from the box
+                const boxTransform = window.getComputedStyle(this.boxWrapper).transform;
+                trail.style.transform = boxTransform;
+                
+                // Add slight random offset for more natural effect
+                const randomOffset = (Math.random() - 0.5) * 10;
+                trail.style.transform += ` translateX(${randomOffset}px)`;
+
+                this.container.appendChild(trail);
+                this.trails.push(trail);
+
+                // Remove trail after animation completes
+                setTimeout(() => {
+                    if (trail.parentNode) {
+                        trail.parentNode.removeChild(trail);
+                    }
+                    const index = this.trails.indexOf(trail);
+                    if (index > -1) {
+                        this.trails.splice(index, 1);
+                    }
+                }, 1500);
+            }
+
+            createTrails() {
+                setInterval(() => {
+                    this.createTrail();
+                }, this.trailInterval);
+            }
+
+            animate() {
+                // Animation is handled by CSS
+                // This method can be extended for more complex effects
+            }
+        }
+
+        // Initialize the trail system when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new TrailSystem();
+        });
+
+        // Add smooth camera follow effect
+        document.addEventListener('mousemove', (e) => {
+            const container = document.querySelector('.animation-container');
+            const x = (e.clientX - window.innerWidth / 2) / 50;
+            const y = (e.clientY - window.innerHeight / 2) / 50;
+            
+            container.style.transform = `rotateX(${-y}deg) rotateY(${x}deg)`;
+        });
+    </script>
+</body>
+</html>

@@ -1,7 +1,9 @@
 import json
 import logging
+import secrets
 import time
 from pathlib import Path
+from urllib.parse import urlencode
 
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,6 +15,8 @@ from slowapi.util import get_remote_address
 
 from backend.api.deps import get_current_user, get_optional_current_user, require_roles
 from backend.api.schemas import (
+    AuthMeResponse,
+    ForgotPasswordRequest,
     FornecedorCreate,
     HealthResponse,
     LoginRequest,
@@ -20,7 +24,9 @@ from backend.api.schemas import (
     MovimentacaoCreate,
     ReadinessResponse,
     RefreshRequest,
+    ResetPasswordRequest,
     SecaoCreate,
+    StatusResponse,
     TokenPairResponse,
     UsuarioCreate,
 )
@@ -50,6 +56,7 @@ from backend.services.usuario_service import UsuarioService
 from backend.utils.alertas import verificar_estoque
 from backend.utils.barcode_qrcode import processar_scan
 from backend.utils.csv_import import importar_produtos_csv
+from backend.utils.email_service import send_password_reset_email
 from backend.utils.serializer import serialize_document, serialize_many
 
 settings = get_settings()
@@ -240,6 +247,58 @@ def logout(request: Request, payload: LogoutRequest):
 
     AuthService.revogar_refresh_token(user_id=user_id, jti=jti)
     return {"status": "ok"}
+
+
+@app.post("/auth/forgot-password", response_model=StatusResponse, tags=["auth"])
+@limiter.limit("20/minute")
+def forgot_password(request: Request, payload: ForgotPasswordRequest):
+    # Resposta fixa evita enumeração de emails válidos.
+    default_response = {
+        "status": "ok",
+        "detail": "Se o email existir, enviaremos instrucoes para redefinir a senha.",
+    }
+
+    usuario = UsuarioService.buscar_usuario_por_email(payload.email)
+    if not usuario or not usuario.get("ativo", True):
+        return default_response
+
+    token = secrets.token_urlsafe(32)
+    AuthService.criar_token_reset_senha(user_id=str(usuario["_id"]), token=token)
+
+    query = urlencode({"token": token})
+    reset_link = f"{settings.frontend_reset_url}?{query}"
+    try:
+        send_password_reset_email(to_email=payload.email, reset_link=reset_link)
+    except Exception:
+        logger.exception("Falha ao enviar email de reset para %s", payload.email)
+    return default_response
+
+
+@app.post("/auth/reset-password", response_model=StatusResponse, tags=["auth"])
+@limiter.limit("20/minute")
+def reset_password(request: Request, payload: ResetPasswordRequest):
+    token_doc = AuthService.validar_token_reset_senha(payload.token)
+    if not token_doc:
+        raise HTTPException(status_code=400, detail="Token de redefinicao invalido ou expirado.")
+
+    usuario_id = token_doc.get("usuario_id")
+    updated = UsuarioService.atualizar_senha_por_id(usuario_id=usuario_id, nova_senha=payload.nova_senha)
+    if not updated:
+        raise HTTPException(status_code=400, detail="Nao foi possivel atualizar a senha.")
+
+    AuthService.marcar_token_reset_como_usado(payload.token)
+    AuthService.revogar_todos_refresh_tokens(str(usuario_id))
+    return {"status": "ok", "detail": "Senha redefinida com sucesso."}
+
+
+@app.get("/auth/me", response_model=AuthMeResponse, tags=["auth"])
+def auth_me(current_user: dict = Depends(get_current_user)):
+    return {
+        "id": str(current_user["_id"]),
+        "nome": current_user.get("nome", ""),
+        "email": current_user.get("email", ""),
+        "perfil": current_user.get("perfil", ""),
+    }
 
 
 @app.get("/produtos/", tags=["produtos"])

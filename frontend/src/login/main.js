@@ -1,5 +1,5 @@
 import "../styles/login.css";
-import { getCurrentProfile, saveTokens } from "../shared/auth";
+import { getCurrentProfile, getRememberMode, saveTokens } from "../shared/auth";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 const RAIN_MODE = (import.meta.env.VITE_RAIN_MODE || "mixed").toLowerCase();
@@ -14,6 +14,16 @@ const ICON_FILES = (
 const form = document.getElementById("login-form");
 const message = document.getElementById("message");
 const submitBtn = document.getElementById("submit-btn");
+const rememberMeEl = document.getElementById("remember-me");
+const forgotBtn = document.getElementById("forgot-password-btn");
+const forgotDialog = document.getElementById("forgot-password-dialog");
+const forgotForm = document.getElementById("forgot-password-form");
+const forgotEmailEl = document.getElementById("forgot-email");
+const forgotMessageEl = document.getElementById("forgot-message");
+const forgotSubmitBtn = document.getElementById("forgot-submit-btn");
+const forgotCloseBtn = document.getElementById("forgot-close-btn");
+const passwordEl = document.getElementById("senha");
+const togglePasswordBtn = document.getElementById("toggle-password");
 const starfield = document.getElementById("starfield");
 
 function createStaticStars() {
@@ -117,13 +127,37 @@ async function login(email, senha) {
   return data;
 }
 
+async function requestPasswordReset(email) {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.detail || "Falha ao solicitar redefinicao.");
+  }
+  return data;
+}
+
 const profile = getCurrentProfile();
 const existingRoute = resolveHomeByProfile(profile);
 if (existingRoute) {
   window.location.replace(existingRoute);
 }
+rememberMeEl.checked = getRememberMode();
 
 initSkyEffects();
+
+togglePasswordBtn.addEventListener("click", () => {
+  const isHidden = passwordEl.type === "password";
+  passwordEl.type = isHidden ? "text" : "password";
+  togglePasswordBtn.setAttribute("aria-label", isHidden ? "Ocultar senha" : "Mostrar senha");
+  togglePasswordBtn.textContent = isHidden ? "🙈" : "👁";
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -131,6 +165,7 @@ form.addEventListener("submit", async (event) => {
   const formData = new FormData(form);
   const email = String(formData.get("email") || "").trim();
   const senha = String(formData.get("senha") || "").trim();
+  const rememberMe = Boolean(formData.get("remember_me"));
 
   setMessage("");
   submitBtn.disabled = true;
@@ -138,7 +173,7 @@ form.addEventListener("submit", async (event) => {
 
   try {
     const tokens = await login(email, senha);
-    saveTokens(tokens.access_token, tokens.refresh_token);
+    saveTokens(tokens.access_token, tokens.refresh_token, rememberMe);
 
     const userProfile = getCurrentProfile();
     const route = resolveHomeByProfile(userProfile);
@@ -153,5 +188,43 @@ form.addEventListener("submit", async (event) => {
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = "Entrar";
+  }
+});
+
+function setForgotMessage(text, type = "") {
+  forgotMessageEl.textContent = text;
+  forgotMessageEl.className = `message ${type}`.trim();
+}
+
+forgotBtn.addEventListener("click", () => {
+  setForgotMessage("");
+  forgotEmailEl.value = document.getElementById("email").value || "";
+  forgotDialog.showModal();
+});
+
+forgotCloseBtn.addEventListener("click", () => {
+  forgotDialog.close();
+});
+
+forgotForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const email = forgotEmailEl.value.trim();
+  if (!email) {
+    setForgotMessage("Informe um email valido.", "error");
+    return;
+  }
+
+  forgotSubmitBtn.disabled = true;
+  forgotSubmitBtn.textContent = "Enviando...";
+  setForgotMessage("");
+
+  try {
+    const result = await requestPasswordReset(email);
+    setForgotMessage(result.detail || "Solicitacao enviada.", "success");
+  } catch (error) {
+    setForgotMessage(error.message, "error");
+  } finally {
+    forgotSubmitBtn.disabled = false;
+    forgotSubmitBtn.textContent = "Enviar email";
   }
 });

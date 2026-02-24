@@ -25,11 +25,27 @@ class LogoutRequest(BaseModel):
     refresh_token: str
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    nova_senha: str = Field(..., min_length=6)
+
+
 class TokenPairResponse(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
     expires_in_seconds: int
+
+
+class AuthMeResponse(BaseModel):
+    id: str
+    nome: str
+    email: str
+    perfil: str
 
 
 class FornecedorCreate(BaseModel):
@@ -68,3 +84,8 @@ class HealthResponse(BaseModel):
 class ReadinessResponse(BaseModel):
     status: str
     mongo: str
+
+
+class StatusResponse(BaseModel):
+    status: str
+    detail: str
