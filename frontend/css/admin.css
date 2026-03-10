@@ -1,0 +1,12 @@
+body.theme-admin {
+  background: radial-gradient(circle at top, #f9f1e7, #ece3d5 45%, #f5f0ea 100%);
+}
+
+.theme-admin .role-actions button {
+  background: #4b1f1f;
+}
+
+.theme-admin .role-actions .ghost {
+  border-color: #4b1f1f;
+  color: #4b1f1f;
+}

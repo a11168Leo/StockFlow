@@ -1,0 +1,139 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Funcionário - StockFlow</title>
+    <link rel="stylesheet" href="/css/role.css" />
+    <link rel="stylesheet" href="/css/funcionario.css" />
+  </head>
+  <body class="theme-funcionario">
+    <nav class="topbar">
+      <div class="topbar-left">
+        <img class="logo-img" src="/logo/Logo2-nobg.svg" alt="StockFlow" />
+        <span class="logo-text">Olá, <span class="user-name">usuário</span></span>
+      </div>
+      <div class="topbar-right">
+        <form class="search" role="search">
+          <input class="search-input" type="search" placeholder="Buscar" aria-label="Buscar" />
+          <button class="search-button" type="submit">Buscar</button>
+        </form>
+        <button class="icon-btn" type="button" aria-label="Notificações">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm6-6V11a6 6 0 1 0-12 0v5L4 18v1h16v-1l-2-2z" />
+          </svg>
+        </button>
+        <div class="profile">
+          <button class="profile-btn" type="button" aria-label="Perfil">
+            <div class="avatar"></div>
+          </button>
+          <div class="profile-menu">
+            <div class="profile-header">
+              <div class="profile-avatar"></div>
+              <div>
+                <div class="profile-name">Nome do Usuário</div>
+                <div class="profile-role">Funcionário</div>
+              </div>
+            </div>
+            <a href="#">Meu perfil</a>
+            <a href="#">Configurações do perfil</a>
+            <button class="logout" type="button">Sair</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="layout">
+      <aside class="side-nav">
+        <a href="#" aria-label="Início">
+          <svg viewBox="0 0 24 24"><path d="M3 11.5 12 3l9 8.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
+          <span class="tooltip">Início</span>
+        </a>
+        <a href="#" aria-label="Vendas">
+          <svg viewBox="0 0 24 24"><path d="M3 4h18v2H3V4zm2 4h14l-1.4 9H6.4L5 8zm4 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm8 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+          <span class="tooltip">Vendas</span>
+        </a>
+        <a href="#" aria-label="Catálogo">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+          </svg>
+          <span class="tooltip">Catálogo</span>
+        </a>
+        <a href="#" aria-label="Relatório">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+          </svg>
+          <span class="tooltip">Relatório</span>
+        </a>
+        <a href="#" aria-label="Configurações">
+          <svg viewBox="0 0 24 24"><path d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm8.9 3.5a7.4 7.4 0 0 0-.1-1.3l2-1.6-2-3.4-2.4.8a7.7 7.7 0 0 0-2.2-1.3l-.4-2.5h-4l-.4 2.5a7.7 7.7 0 0 0-2.2 1.3l-2.4-.8-2 3.4 2 1.6a7.4 7.4 0 0 0-.1 1.3c0 .4 0 .9.1 1.3l-2 1.6 2 3.4 2.4-.8a7.7 7.7 0 0 0 2.2 1.3l.4 2.5h4l.4-2.5a7.7 7.7 0 0 0 2.2-1.3l2.4.8 2-3.4-2-1.6c.1-.4.1-.9.1-1.3z"/></svg>
+          <span class="tooltip">Configurações</span>
+        </a>
+        <a href="#" aria-label="Sair">
+          <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5zM4 3h8v2H6v14h6v2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>
+          <span class="tooltip">Sair</span>
+        </a>
+      </aside>
+      <main class="content">
+        <header class="role-hero">
+          <div>
+            <p class="role-kicker">Funcionário</p>
+            <h1>Rotina guiada</h1>
+            <p class="role-sub">Registre movimentações e conclua tarefas com rapidez.</p>
+          </div>
+          <div class="role-actions">
+            <button>Registrar entrada</button>
+            <button class="ghost">Nova saída</button>
+          </div>
+        </header>
+        <section class="role-layout">
+          <section class="stat-grid">
+            <article class="stat-card">
+              <h3>Minhas tarefas</h3>
+              <p class="stat-value">5</p>
+              <span class="stat-note">2 prioritárias</span>
+            </article>
+            <article class="stat-card">
+              <h3>Movimentações</h3>
+              <p class="stat-value">18</p>
+              <span class="stat-note">Hoje</span>
+            </article>
+            <article class="stat-card">
+              <h3>Checklist</h3>
+              <p class="stat-value">3</p>
+              <span class="stat-note">Pendentes</span>
+            </article>
+          </section>
+          <section class="panel-split">
+            <div class="panel">
+              <h2>Checklist do turno</h2>
+              <ul class="task-list">
+                <li>Conferir pallets seção B2</li>
+                <li>Separar pedidos do dia</li>
+                <li>Registrar devoluções</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h2>Produtos recentes</h2>
+              <div class="timeline">
+                <div>
+                  <p>Lote 17B - Entrada</p>
+                  <span>Há 20 min</span>
+                </div>
+                <div>
+                  <p>Saída 3021 - Pedido</p>
+                  <span>Há 1 hora</span>
+                </div>
+                <div>
+                  <p>Conferência - Seção A</p>
+                  <span>Hoje 08:10</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
+
+

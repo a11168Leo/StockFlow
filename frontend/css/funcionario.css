@@ -1,0 +1,12 @@
+body.theme-funcionario {
+  background: radial-gradient(circle at top, #f1f5fb, #e6edf8 45%, #f7f9fc 100%);
+}
+
+.theme-funcionario .role-actions button {
+  background: #1f3a5a;
+}
+
+.theme-funcionario .role-actions .ghost {
+  border-color: #1f3a5a;
+  color: #1f3a5a;
+}

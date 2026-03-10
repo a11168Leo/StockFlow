@@ -1,0 +1,226 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - StockFlow</title>
+    <link rel="stylesheet" href="/css/role.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body class="theme-admin">
+    <nav class="topbar">
+      <div class="topbar-left">
+        <img class="logo-img" src="/logo/Logo2-nobg.svg" alt="StockFlow" />
+        <span class="logo-text">Olá, <span class="user-name">usuário</span></span>
+      </div>
+      <div class="topbar-right">
+        <form class="search" role="search">
+          <input class="search-input" type="search" placeholder="Buscar" aria-label="Buscar" />
+          <button class="search-button" type="submit">Buscar</button>
+        </form>
+        <button class="icon-btn" type="button" aria-label="Indicadores">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 19h16v2H2V3h2v16zm4-8h2v6H8v-6zm4-4h2v10h-2V7zm4 2h2v8h-2V9z" />
+          </svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Notificações">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm6-6V11a6 6 0 1 0-12 0v5L4 18v1h16v-1l-2-2z" />
+          </svg>
+        </button>
+        <div class="profile">
+          <button class="profile-btn" type="button" aria-label="Perfil">
+            <div class="avatar"></div>
+          </button>
+          <div class="profile-menu">
+            <div class="profile-header">
+              <div class="profile-avatar"></div>
+              <div>
+                <div class="profile-name">Nome do Usuário</div>
+                <div class="profile-role">Admin</div>
+              </div>
+            </div>
+            <a href="#">Meu perfil</a>
+            <a href="#">Configurações do perfil</a>
+            <button class="logout" type="button">Sair</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="layout">
+      <aside class="side-nav">
+        <a href="#" aria-label="Início">
+          <svg viewBox="0 0 24 24"><path d="M3 11.5 12 3l9 8.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
+          <span class="tooltip">Início</span>
+        </a>
+        <a href="#" aria-label="Vendas">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
+            <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+          </svg>
+          <span class="tooltip">Vendas</span>
+        </a>
+        <a href="#" aria-label="Catálogo">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+          </svg>
+          <span class="tooltip">Catálogo</span>
+        </a>
+        <a href="#" class="team-trigger" aria-label="Equipe">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
+            <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
+          </svg>
+          <span class="tooltip">Equipe</span>
+        </a>
+        <a href="#" aria-label="Relatório">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+          </svg>
+          <span class="tooltip">Relatório</span>
+        </a>
+        <a href="#" aria-label="Mapa">
+          <svg viewBox="0 0 24 24"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3zm0 2.2 4 2v13.6l-4-2V5.2zm-4 2 2-.9v13.6l-2 .9V7.3zm14 0v13.6l-2 .9V6.4l2-.9z"/></svg>
+          <span class="tooltip">Mapa</span>
+        </a>
+        <a href="#" aria-label="Configurações">
+          <svg viewBox="0 0 24 24"><path d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm8.9 3.5a7.4 7.4 0 0 0-.1-1.3l2-1.6-2-3.4-2.4.8a7.7 7.7 0 0 0-2.2-1.3l-.4-2.5h-4l-.4 2.5a7.7 7.7 0 0 0-2.2 1.3l-2.4-.8-2 3.4 2 1.6a7.4 7.4 0 0 0-.1 1.3c0 .4 0 .9.1 1.3l-2 1.6 2 3.4 2.4-.8a7.7 7.7 0 0 0 2.2 1.3l.4 2.5h4l.4-2.5a7.7 7.7 0 0 0 2.2-1.3l2.4.8 2-3.4-2-1.6c.1-.4.1-.9.1-1.3z"/></svg>
+          <span class="tooltip">Configurações</span>
+        </a>
+        <a href="#" aria-label="Sair">
+          <svg viewBox="0 0 24 24"><path d="M16 17v-3H9v-4h7V7l5 5-5 5zM4 3h8v2H6v14h6v2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>
+          <span class="tooltip">Sair</span>
+        </a>
+      </aside>
+      <aside class="offcanvas" id="team-offcanvas" aria-hidden="true">
+        <div class="offcanvas-header">
+          <h2>Equipe</h2>
+          <button class="offcanvas-close" type="button" data-offcanvas-close aria-label="Fechar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+            </svg>
+          </button>
+        </div>
+        <nav class="offcanvas-list">
+          <a href="#">Colaboradores</a>
+          <a href="#">Turnos programados</a>
+          <a href="#">Planilhas de horas</a>
+          <a href="#">Ciclos de pagamento</a>
+        </nav>
+      </aside>
+      <main class="content">
+        <header class="role-hero">
+          <div>
+            <p class="role-kicker">Admin</p>
+            <h1>Visão geral do sistema</h1>
+            <p class="role-sub">Configurações, usuários e indicadores críticos em um só lugar.</p>
+          </div>
+          <div class="role-actions">
+            <button>Adicionar usuário</button>
+            <button class="ghost">Exportar relatório</button>
+          </div>
+        </header>
+        <section class="role-layout">
+          <section class="stat-grid">
+            <article class="stat-card">
+              <h3>Usuários ativos</h3>
+              <p class="stat-value">128</p>
+              <span class="stat-note">+6 esta semana</span>
+            </article>
+            <article class="stat-card">
+              <h3>Alertas críticos</h3>
+              <p class="stat-value">9</p>
+              <span class="stat-note">3 pendentes hoje</span>
+            </article>
+            <article class="stat-card">
+              <h3>Centros ativos</h3>
+              <p class="stat-value">4</p>
+              <span class="stat-note">Lisboa, Porto</span>
+            </article>
+          </section>
+          <section class="panel-split">
+            <div class="panel">
+              <h2>Configurações rápidas</h2>
+              <ul class="task-list">
+                <li>Perfis e permissões</li>
+                <li>Políticas de aprovação</li>
+                <li>Integrações externas</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h2>Auditoria recente</h2>
+              <div class="timeline">
+                <div>
+                  <p>Nova regra de alerta aplicada</p>
+                  <span>Há 2 horas</span>
+                </div>
+                <div>
+                  <p>Usuário gerente criado</p>
+                  <span>Ontem</span>
+                </div>
+                <div>
+                  <p>Exportação mensal concluída</p>
+                  <span>02/03</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            <h2>Equipe</h2>
+            <div class="team-grid">
+              <div class="team-card">
+                <div class="team-avatar"></div>
+                <div>
+                  <p class="team-name">Camila Dias</p>
+                  <span class="team-role">Admin geral</span>
+                </div>
+              </div>
+              <div class="team-card">
+                <div class="team-avatar"></div>
+                <div>
+                  <p class="team-name">Rafael Gomes</p>
+                  <span class="team-role">Admin de operações</span>
+                </div>
+              </div>
+              <div class="team-card">
+                <div class="team-avatar"></div>
+                <div>
+                  <p class="team-name">Lucia Santos</p>
+                  <span class="team-role">Gerente de turno</span>
+                </div>
+              </div>
+              <div class="team-card">
+                <div class="team-avatar"></div>
+                <div>
+                  <p class="team-name">Daniel Costa</p>
+                  <span class="team-role">Supervisor</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+    <script>
+      const teamTrigger = document.querySelector(".team-trigger");
+      const offcanvasCloses = document.querySelectorAll("[data-offcanvas-close]");
+
+      const openOffcanvas = (event) => {
+        event.preventDefault();
+        document.body.classList.add("offcanvas-open");
+      };
+
+      const closeOffcanvas = () => {
+        document.body.classList.remove("offcanvas-open");
+      };
+
+      teamTrigger?.addEventListener("click", openOffcanvas);
+      offcanvasCloses.forEach((btn) => btn.addEventListener("click", closeOffcanvas));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeOffcanvas();
+        }
+      });
+    </script>
+  </body>
+</html>
+
+
